@@ -23,51 +23,67 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.post('/api/books',(req,res)=>{
+
+
+//CONNECTION STRING
+//mongodb+srv://admin:admin@cluster0.s9dxiuk.mongodb.net/?retryWrites=true&w=majority
+//npm nstall mongoose in the folder the server is running from
+//the folder is BackEnd in this case
+
+//code copied from https://mongoosejs.com/docs/index.html
+
+//import mongoose
+const mongoose = require('mongoose');
+//Error catcher
+main().catch(err => console.log(err));
+//awaits the connection to the mongodb address
+async function main() {
+  //use the mongo adress gotten in database -> connect -> connect yourapplication -> copy string and add password
+  await mongoose.connect('mongodb+srv://admin:admin@cluster0.s9dxiuk.mongodb.net/?retryWrites=true&w=majority');
+}
+//create a schema for the books
+const bookSchema = new mongoose.Schema({
+  title: String,
+  cover: String,
+  author: String
+});
+
+//DECLARE a model ('COLLECTION NAME', SCHEMA)
+const bookModel = mongoose.model('Books', bookSchema);
+
+
+app.post('/api/books', (req, res) => {
   console.log(req.body);
+
+  //CREATE A record in our database https://mongoosejs.com/docs/api.html#model_Model-create
+  bookModel.create({
+    title: req.body.title,
+    cover: req.body.cover,
+    author: req.body.author
+
+  })
+
   res.send('Data Recieved');
 })
 
-app.get('/api/books', (req, res) => {
-  const books = [
-    {
-      "title": "Learn Git in a Month of Lunches",
-      "isbn": "1617292419",
-      "pageCount": 0,
-      "thumbnailUrl": "https://s3.amazonaws.com/AKIAJC5RLADLUMVRPFDQ.book-thumb-images/umali.jpg", "status": "MEAP",
-      "authors": ["Rick Umali"],
-      "categories": []
-    },
-    {
-      "title": "MongoDB in Action, Second Edition",
-      "isbn": "1617291609",
-      "pageCount": 0,
-      "thumbnailUrl": "https://s3.amazonaws.com/AKIAJC5RLADLUMVRPFDQ.book-thumb-images/banker2.jpg",
-      "status": "MEAP",
-      "authors": [
-        "Kyle Banker",
-        "Peter Bakkum",
-        "Tim Hawkins",
-        "Shaun Verch",
-        "Douglas Garrett"
-      ],
-      "categories": []
-    },
-    {
-      "title": "Getting MEAN with Mongo, Express, Angular, and Node",
-      "isbn": "1617292036",
-      "pageCount": 0,
-      "thumbnailUrl": "https://s3.amazonaws.com/AKIAJC5RLADLUMVRPFDQ.book-thumb-images/sholmes.jpg",
-      "status": "MEAP",
-      "authors": ["Simon Holmes"],
-      "categories": []
-    }
-  ]
 
-  res.json({
-    myBooks: books,
-    message: 'Hello from the server'
+app.get('/api/books', (req, res) => {
+  //delete previous hard coded books json
+  //Find our record of books
+  bookModel.find((error, data) => {
+    //responds by sending back a json with the data
+    res.json(data);
   })
+})
+//search for a book via its unique id
+app.get('/api/books/:id',(req,res)=>{
+  //logs the id to the server console
+  console.log(req.params.id);
+  //return the data for the unique book id from the url
+  bookModel.findById(req.params.id,(error, data)=>{
+    res.json(data);
+  })
+
 })
 
 app.listen(port, () => {

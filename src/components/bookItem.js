@@ -10,13 +10,15 @@ export class BookItem extends React.Component {
                 <h6>{this.props.book.authors[0]}</h6> */}
 
                 <Card>
-            <Card.Header>{this.props.book.title}</Card.Header>
+                    <Card.Header>{this.props.book.title}</Card.Header>
                     <Card.Body>
-       <blockquote className="blockquote mb-0">
-            <img src={this.props.book.thumbnailUrl}></img>
-            <footer >
-                {this.props.book.authors[0]}
-                    </footer>
+                        <blockquote className="blockquote mb-0">
+                            {/* changed to cover */}
+                            <img src={this.props.book.cover}></img>
+                            <footer >
+                                {/* Changed to author */}
+                                {this.props.book.author}
+                            </footer>
                         </blockquote>
                     </Card.Body>
                 </Card>
