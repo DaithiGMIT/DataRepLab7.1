@@ -15,6 +15,9 @@ import {
   Route
 } from 'react-router-dom';
 
+// import f create
+import { FCreate } from './components/fcreate';
+
 class App extends React.Component {
   render() {
     return (
@@ -34,6 +37,8 @@ class App extends React.Component {
         <Route path='/' element={<Content></Content>}></Route>
         <Route path='/read' element={<Read></Read>}></Route>
         <Route path='/create' element={<Create></Create>}></Route>
+        {/* Add fcreate route */}
+        <Route path='/fcreate' element={<FCreate></FCreate>}></Route>
       </Routes>
         {/* <Header></Header>
         <Content></Content>
